@@ -1,6 +1,12 @@
-﻿namespace Sudoku.TestSolveurs;
+﻿using Sudoku.Shared;
+using Microsoft.Z3;
 
-public class Class1
+namespace Sudoku.TestSolveurs;
+
+public class TestSolveursTests : ISudokuSolver
 {
-
+    public SudokuGrid Solve(SudokuGrid s)
+    {
+        return s;
+    }
 }
