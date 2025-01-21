@@ -2,21 +2,12 @@ from tensorflow.keras.models import load_model
 import numpy as np
 
 # Charger le modèle
-modele = load_model("trained_model/digit_classifier.h5")
+modele = load_model("Sudoku/Modèles/AA_sudoku_model_final.h5")
 
-# caractéristiques du modèle sudoku_model_colab_1M_V2.h5 : val_accuracy: 0.8211 - val_loss: 0.4156 IL Y A DES FAUTES
-# caractéristiques du modèle sudoku_model_colab_1M_Martial_V1.h5 : val_accuracy: 0.8145 - val_loss: 0.4139 IL Y A DES FAUTES
-# caractéristiques du modèle A100_sudoku_model_V1.h5 : val_accuracy: 0.6381 - val_loss: 1.1762 IL Y A DES FAUTES
-# caractéristiques du modèle A100_sudoku_model_9M_V2.h5 : val_accuracy: 0.7444 - val_loss: 0.7722 IL Y A DES FAUTES
-# caractéristiques du modèle AA_sudoku_model_final.h5 : val_accuracy: 0.8297 - val_loss: 0.3796 IL Y A DES FAUTES
-
-# caractéristiques du modèle sudoku_model_FINAL_PUNAISE.h5 : 
-# 1M : val_accuracy: 0.6434 - val_loss: 0.9379
-# 1M+9M : 
-
-# caractéristiques du modèle Final.h5 : params: 11,360,985 (43.34 MB)
-# 1M : val_accuracy: val_accuracy: 0.6659 - val_loss: 0.9293
-# 1M+9M : val_accuracy: 0.6971 - val_loss: 0.8200
+# caractéristiques du modèle sudoku_model_colab_1M_V2.h5 : val_accuracy: 0.8211 - val_loss: 0.4156
+# caractéristiques du modèle sudoku_model_colab_1M_Martial_V1.h5 : val_accuracy: 0.8145 - val_loss: 0.4139
+# caractéristiques du modèle A100_sudoku_model_V1.h5 : val_accuracy: 0.6381 - val_loss: 1.1762
+# caractéristiques du modèle A100_sudoku_model_9M_V2.h5 : val_accuracy: 0.7444 - val_loss: 0.7722
 
 grille_facile = [
     [0, 0, 9, 0, 0, 2, 0, 0, 5],
