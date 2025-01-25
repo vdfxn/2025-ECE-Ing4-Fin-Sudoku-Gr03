@@ -10,5 +10,12 @@
     <ItemGroup>
       <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
     </ItemGroup>
-
+    
+    <!--Ajout du script python dans le répertoire de sortie de la compilation-->
+    <ItemGroup>
+        <None Update="CCNPythonSimpleSolver.py">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    
 </Project>

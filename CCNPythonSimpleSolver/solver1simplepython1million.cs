@@ -1,4 +1,5 @@
 using System;
+using Python.Runtime;
 using Sudoku.Shared;
 
 namespace CCNPythonSimpleSolver;
@@ -27,7 +28,7 @@ public class solver1simplepython1million : PythonSolverBase
             scope.Set("instance", pyCells);
 
             // run the Python script
-            string code = Resources.Backtracking_py;
+            string code = System.IO.File.ReadAllText("solver1simplepython1million.py");
             scope.Exec(code);
 
             PyObject result = scope.Get("result");
@@ -40,6 +41,10 @@ public class solver1simplepython1million : PythonSolverBase
         //}
 
     }
+
+		    
+
+
     protected override void InitializePythonComponents()
     {
         //declare your pip packages here
