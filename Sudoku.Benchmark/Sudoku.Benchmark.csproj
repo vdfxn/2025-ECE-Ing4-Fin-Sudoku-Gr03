@@ -15,9 +15,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../Sudoku.TestSolveurs/Sudoku.TestSolveurs.csproj" />
+    <ProjectReference Include="..\CCNPythonSimpleSolver\CCNPythonSimpleSolver.csproj" />
     <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
+    <ProjectReference Include="..\Sudoku.Z3Solvers\Sudoku.Z3Solvers.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
