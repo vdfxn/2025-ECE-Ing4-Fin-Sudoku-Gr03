@@ -7,7 +7,11 @@ import numpy as np
 from timeit import default_timer
 
 # Import le modèle train
-model = keras.models.load_model('sudoku.model.keras')
+# model = keras.models.load_model('sudoku.model.keras')
+if 'modelPath' not in locals():
+    modelPath = 'sudoku.model.keras'
+        
+model = keras.models.load_model(modelPath)
 
 # Définir `instance` uniquement si non déjà défini par PythonNET
 if 'instance' not in locals():
