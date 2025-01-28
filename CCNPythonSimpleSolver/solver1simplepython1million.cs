@@ -41,10 +41,7 @@ public class solver1simplepython1million : PythonSolverBase
         //}
 
     }
-
-		    
-
-
+    
     protected override void InitializePythonComponents()
     {
         //declare your pip packages here
