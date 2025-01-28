@@ -40,3 +40,15 @@ Pour ce qui est du Workflow de collaboration:
 - Vous serez invité à vous évaluer entre autre sur votre capacité à participer au projet global en partageant régulièrement votre travail et en récupérant celui partagé par les autres groupes. Tout cela sera visible dans la page Insights/Network de vôtre dépôt ou du dépôt principal.
 
 Concernant enfin vos sujets respectifs et vos éventuelles questions spécifiques, je vous invite à utiliser le fil de discussion de votre groupe dans le forum du projet.
+
+
+
+Récapitulatif des commandes principales
+	1.	Récupérer les modifications du dépôt principal :
+        git fetch upstream
+    
+    2.	Fusionner les modifications dans ta branche locale :
+        git merge upstream/master
+
+    3.	Pousser vers ton dépôt personnel (fork) :
+        git push origin master
