@@ -18,6 +18,7 @@
     <ProjectReference Include="..\CCNPythonSimpleSolver\CCNPythonSimpleSolver.csproj" />
     <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
+    <ProjectReference Include="..\Sudoku.Z3Solvers\Sudoku.Z3Solvers.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

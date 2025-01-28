@@ -7,7 +7,7 @@ namespace CCNPythonSimpleSolver;
 public class solver1simplepython1million : PythonSolverBase
 
 {
-    public override Shared.SudokuGrid Solve(Shared.SudokuGrid s)
+    public override SudokuGrid Solve(SudokuGrid s)
     {
         //System.Diagnostics.Debugger.Break();
 
@@ -28,7 +28,7 @@ public class solver1simplepython1million : PythonSolverBase
             scope.Set("instance", pyCells);
 
             // run the Python script
-            string code = System.IO.File.ReadAllText("solver1simplepython1million.py");
+            string code = System.IO.File.ReadAllText("CCNPythonSimpleSolver.py");
             scope.Exec(code);
 
             PyObject result = scope.Get("result");
