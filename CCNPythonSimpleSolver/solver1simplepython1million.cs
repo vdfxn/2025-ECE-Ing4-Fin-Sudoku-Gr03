@@ -15,6 +15,9 @@ public class solver1simplepython1million : PythonSolverBase
         //using (Py.GIL())
         //{
         // create a Python scope
+
+        var modelPath = System.IO.Path.Combine(Environment.CurrentDirectory, "sudoku.model.keras");
+
         using (PyModule scope = Py.CreateScope())
         {
 
@@ -26,6 +29,7 @@ public class solver1simplepython1million : PythonSolverBase
 
             // create a Python variable "instance"
             scope.Set("instance", pyCells);
+            scope.Set(nameof(modelPath), modelPath);
 
             // run the Python script
             string code = System.IO.File.ReadAllText("CCNPythonSimpleSolver.py");
