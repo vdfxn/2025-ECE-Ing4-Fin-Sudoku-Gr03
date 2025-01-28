@@ -1,36 +1,13 @@
 import numpy as np
 from timeit import default_timer
 
-def is_valid(grid, row, col, num):
-    # Vérifier si num est présent dans la ligne spécifiée
-    if num in grid[row]:
-        return False
-    
-    # Vérifier si num est présent dans la colonne spécifiée
-    if num in grid[:, col]:
-        return False
-    
-    # Vérifier si num est présent dans le bloc 3x3
-    start_row, start_col = 3 * (row // 3), 3 * (col // 3)
-    for r in range(start_row, start_row + 3):
-        for c in range(start_col, start_col + 3):
-            if grid[r, c] == num:
-                return False
-    return True
+import copy
+import keras
+import numpy as np
+from timeit import default_timer
 
-def solve_sudoku(grid, row=0, col=0):
-    # Trouver la prochaine cellule vide
-    for i in range(row, 9):
-        for j in range(col if i == row else 0, 9):
-            if grid[i, j] == 0:
-                for num in range(1, 10):
-                    if is_valid(grid, i, j, num):
-                        grid[i, j] = num
-                        if solve_sudoku(grid, i, j + 1):
-                            return True
-                        grid[i, j] = 0
-                return False
-    return True
+# Import le modèle train
+model = keras.models.load_model('sudoku.model.keras')
 
 # Définir `instance` uniquement si non déjà défini par PythonNET
 if 'instance' not in locals():
@@ -45,6 +22,56 @@ if 'instance' not in locals():
         [9,0,0,0,6,5,0,0,0],
         [0,4,0,9,7,0,0,0,0]
     ], dtype=int)
+def norm(a):
+    return (a / 9) - .5
+
+def denorm(a):
+    return (a + .5) * 9
+def inference_sudoku(sample):
+    '''
+        This function solve the sudoku by filling blank positions one by one.
+    '''
+
+    feat = copy.copy(sample)
+
+    while (1):
+
+        out = model.predict(feat.reshape((1, 9, 9, 1)))
+        out = out.squeeze()
+
+        pred = np.argmax(out, axis=1).reshape((9, 9)) + 1
+        prob = np.around(np.max(out, axis=1).reshape((9, 9)), 2)
+
+        feat = denorm(feat).reshape((9, 9))
+        mask = (feat == 0)
+
+        if (mask.sum() == 0):
+            break
+
+        prob_new = prob * mask
+
+        ind = np.argmax(prob_new)
+        x, y = (ind // 9), (ind % 9)
+
+        val = pred[x][y]
+        feat[x][y] = val
+        feat = norm(feat)
+
+    return pred
+
+def solve_sudoku(instance):
+    instance = instance.replace('\n', '')
+    instance = instance.replace(' ', '')
+    instance = np.array([int(j) for j in instance]).reshape((9, 9, 1))
+    instance = norm(instance)
+    instance = inference_sudoku(instance)
+    return instance
+start = default_timer()
+instance = solve_sudoku(instance)  # Résolution de la grille.
+
+print('solved puzzle:\n')  # Affichage du puzzle résolu.
+print(instance)
+np.sum(instance, axis=1)  # Somme des lignes pour vérifier l'intégrité du Sudoku.
 
 start = default_timer()
 # Exécuter la résolution de Sudoku
