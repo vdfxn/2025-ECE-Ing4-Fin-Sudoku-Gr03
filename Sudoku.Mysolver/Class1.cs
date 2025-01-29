@@ -1,4 +1,4 @@
-﻿using Sudoku.Shared;  // Assure-toi que cette référence est présente
+﻿using Sudoku.Shared;  
 using System;
 
 namespace Sudoku.Mysolver
