@@ -62,7 +62,19 @@ def solve_sudoku_sat(grid):
                         box_vars.append((x[i][j][d], 1))
                 constraints.append(PbEq(box_vars, 1))
     
-    
+    #
+    # 5) Contraintes initiales : si la grille a déjà un chiffre val != 0
+    #
+    for i, j in product(range(9), range(9)):
+        val = grid[i][j]
+        if val != 0:
+            d = val - 1  # 0..8
+            # Forcer x[i][j][d] = True, et les autres = False
+            for dd in range(9):
+                if dd == d:
+                    constraints.append(x[i][j][dd] == True)
+                else:
+                    constraints.append(x[i][j][dd] == False)
     
     # Ajout de toutes les contraintes en une fois
     solver.add(constraints)
