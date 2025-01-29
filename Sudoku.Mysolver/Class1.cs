@@ -5,13 +5,11 @@ namespace Sudoku.Mysolver
 {
     public class MySolver : ISudokuSolver
     {
-        // Implémentation de la méthode Solve pour résoudre une grille de Sudoku
+        
         public SudokuGrid Solve(SudokuGrid grid)
         {
-            // Implémentation de ton algorithme de résolution ici
-            // Par exemple, une solution simple utilisant une logique de backtracking
-
-            // Tu peux commencer par implémenter un solver simple comme celui-ci
+            
+            
             if (SolveSudoku(grid))
             {
                 return grid;
@@ -50,7 +48,7 @@ namespace Sudoku.Mysolver
             return true;
         }
 
-        // Vérifie si le nombre est sûr à placer dans la grille
+        
         private bool IsSafe(SudokuGrid grid, int row, int col, int num)
         {
             // Vérifier la ligne
