@@ -5,7 +5,7 @@ from timeit import default_timer
 def solve_sudoku_sat(grid):
     """
     Encodage SAT (booléen) du Sudoku avec Z3, en utilisant PbEq
-    pour les contraintes "exactement 1".
+    pour les contraintes "exactement 1".. 
     
     grid : 9x9 avec 0 pour case vide, [1..9] sinon
     Retour : grille résolue ou None
