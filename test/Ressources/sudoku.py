@@ -93,7 +93,7 @@ def solve_sudoku(game):
     return game  # Retourne la grille résolue.
 
 
-
+#test
 # Exemple de résolution d'une grille de Sudoku donnée sous forme brute.
 game = '''
           0 8 0 0 3 2 0 0 1
