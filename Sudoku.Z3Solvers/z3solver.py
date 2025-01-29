@@ -1,7 +1,6 @@
-from z3 import *
+from z3 import Int, Solver, And, Distinct, sat
 from timeit import default_timer
 
-# Fonction pour résoudre un Sudoku avec Z3
 def solve_sudoku_with_z3(grid):
     """
     Résout un Sudoku en utilisant le solveur Z3.
@@ -63,29 +62,20 @@ def solve_sudoku_with_z3(grid):
         print("Aucune solution trouvée.")
         return None
 
-# Définir la grille de Sudoku initiale (passée depuis le csharp ou explicitement pour travailler en autonomie)
-if 'instance' not in locals():
-    instance = (
-        (0, 0, 0, 0, 9, 4, 0, 3, 0),
-        (0, 0, 0, 5, 1, 0, 0, 0, 7),
-        (0, 8, 9, 0, 0, 0, 0, 4, 0),
-        (0, 0, 0, 0, 0, 0, 2, 0, 8),
-        (0, 6, 0, 2, 0, 1, 0, 5, 0),
-        (1, 0, 2, 0, 0, 0, 0, 0, 0),
-        (0, 7, 0, 0, 0, 0, 5, 2, 0),
-        (9, 0, 0, 0, 6, 5, 0, 0, 0),
-        (0, 4, 0, 9, 7, 0, 0, 0, 0),
-    )
+# Exemple d'utilisation
+grille = [
+    [0, 0, 0, 0, 9, 4, 0, 3, 0],
+    [0, 0, 0, 5, 1, 0, 0, 0, 7],
+    [0, 8, 9, 0, 0, 0, 0, 4, 0],
+    [0, 0, 0, 0, 0, 0, 2, 0, 8],
+    [0, 6, 0, 2, 0, 1, 0, 5, 0],
+    [1, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 7, 0, 0, 0, 0, 5, 2, 0],
+    [9, 0, 0, 0, 6, 5, 0, 0, 0],
+    [0, 4, 0, 9, 7, 0, 0, 0, 0],
+]
 
-# Solve the Sudoku puzzle
-start = default_timer()
-result = solve_sudoku_with_z3(instance)
-execution = default_timer() - start
-
-# Affichez la solution ou un message d'échec
-
-if result:
-     print("Sudoku résolu avec succès avec Z3 Solver:")
-     for row in result:
-         print(row)
-     print("Le temps de résolution est de : ", execution * 1000, "ms")
+solution = solve_sudoku_with_z3(grille)
+if solution:
+    for ligne in solution:
+        print(ligne)
