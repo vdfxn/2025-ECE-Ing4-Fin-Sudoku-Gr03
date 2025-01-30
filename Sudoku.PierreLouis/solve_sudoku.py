@@ -1,8 +1,13 @@
 from tensorflow.keras.models import load_model
 import numpy as np
 
+
+if 'modelPath' not in locals():
+    modelPath = 'training/models/sudoku_model.h5'
+
+
 # Charger le modèle
-modele = load_model("Sudoku/Modèles/AA_sudoku_model_final.h5")
+modele = load_model(modelPath)
 
 # caractéristiques du modèle sudoku_model_colab_1M_V2.h5 : val_accuracy: 0.8211 - val_loss: 0.4156
 # caractéristiques du modèle sudoku_model_colab_1M_Martial_V1.h5 : val_accuracy: 0.8145 - val_loss: 0.4139
@@ -45,11 +50,16 @@ grille_EXTREME = [
     [0, 0, 0, 0, 0, 0, 0, 4, 0],
 ]
 
-grille_facile = np.array(grille_facile).reshape(1, 9, 9, 1)
+
+if 'instance' not in locals():
+    instance = grille_facile
+
+
+model_input = np.array(instance).reshape(1, 9, 9, 1)
 #13 fautes pour la grille facile
 
 # Faire la prédiction
-prediction = modele.predict(grille_facile)
+prediction = modele.predict(model_input)
 
 # Convertir les probabilités en valeurs (0 à 8) et ajouter 1 pour obtenir les chiffres (1 à 9)
 solution = np.argmax(prediction, axis=-1).reshape(9, 9) + 1

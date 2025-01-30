@@ -11,7 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Sudoku-Solver-Training\trained_model\digit_classifier.h5">
+    <None Update="solve_sudoku.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="training\models\sudoku_model.h5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
