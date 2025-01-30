@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Z3Solvers", "Sudoku.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNPythonSimpleSolver", "CCNPythonSimpleSolver\CCNPythonSimpleSolver.csproj", "{FD037BDA-7C00-4350-A7E5-542F03366EC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.PierreLouis", "Sudoku.PierreLouis\Sudoku.PierreLouis.csproj", "{EF6913D3-ABA6-4949-8E27-7C097800D439}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,10 +41,12 @@ Global
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal
