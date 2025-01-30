@@ -1,91 +1,103 @@
-from z3 import Solver, Bool, PbEq, sat, set_param
-from itertools import product
+from itertools import product, combinations
+from z3 import Solver, Bool, And, Or, Not, sat
 from timeit import default_timer
 
-def solve_sudoku_sat(grid):
+def solve_sudoku_bool_optimized(grid):
     """
-    Encodage SAT (booléen) du Sudoku avec Z3, en utilisant PbEq
-    et divers réglages pour accélérer la résolution.
-    
-    grid : 9x9 avec 0 pour case vide, [1..9] sinon
-    Retour : grille résolue ou None
-    """
-    # Paramètres globaux pour activer le parallélisme et quelques optimisations
-    # dans les formules SAT/boolean. 
-    set_param("parallel.enable", True)
+    Encodage booléen rapide d'un Sudoku 9x9 avec Z3 en Python.
+    grid: itérable 9x9, 0 pour case vide, sinon [1..9].
 
+    Retourne la solution (liste 9x9) ou None si insatisfaisable.
+    """
+
+    # -- Création du solveur avec quelques paramètres autorisés --
     solver = Solver()
-    # Autoriser plusieurs threads si possible (si votre version de Z3 le supporte).
-    solver.set("threads", 4)
+    solver.set(timeout=10_000)   # 10 secondes de timeout
+    solver.set(threads=4)        # Exploiter 4 cœurs si possible
 
-    # NOTE : Certaines versions de Z3 ne prennent pas en charge le paramètre "sat.pb.solver".
-    # Si c'est le cas, retirez simplement la ligne correspondante.
-    # solver.set("sat.pb.solver", True)  # <-- Ligne retirée pour éviter l'erreur "unknown parameter"
-
-    # Limite de temps (en millisecondes, ici ~10s)
-    solver.set("timeout", 10_000)
-
-    # Variables booléennes : x[i][j][d] => la case (i,j) contient d+1
+    # -- Déclaration des variables booléennes x[i][j][d] --
+    # x[i][j][d] = True  <==>  la case (i,j) contient la valeur (d+1)
     x = [[[Bool(f"x_{i}_{j}_{d}")
             for d in range(9)]
-            for j in range(9)]
-            for i in range(9)]
+          for j in range(9)]
+         for i in range(9)]
 
-    #
-    # 1) Contrainte : chaque case (i, j) a exactement 1 des 9 valeurs
-    #
+    constraints = []
+
+    # == 1) Contraintes "exactement une valeur par case" ==
+    #    On décompose en:
+    #    - "Au moins une" valeur
+    #    - "Au plus une" valeur : paires incompatibles
     for i, j in product(range(9), range(9)):
-        solver.add(PbEq([(x[i][j][d], 1) for d in range(9)], 1))
+        # Au moins une
+        constraints.append(Or(*(x[i][j][d] for d in range(9))))
 
-    #
-    # 2) Chaque ligne i, pour chaque valeur d, doit l'avoir exactement 1 fois
-    #
+        # Au plus une (éliminer les paires d, d')
+        for d1, d2 in combinations(range(9), 2):
+            constraints.append(Not(And(x[i][j][d1], x[i][j][d2])))
+
+    # == 2) Contraintes "chaque valeur apparaît une fois par ligne" ==
     for i in range(9):
         for d in range(9):
-            solver.add(PbEq([(x[i][j][d], 1) for j in range(9)], 1))
+            # Au moins une colonne j
+            constraints.append(Or(*(x[i][j][d] for j in range(9))))
+            # Au plus une (pairwise)
+            for j1, j2 in combinations(range(9), 2):
+                constraints.append(Not(And(x[i][j1][d], x[i][j2][d])))
 
-    #
-    # 3) Chaque colonne j, pour chaque valeur d, doit l'avoir exactement 1 fois
-    #
+    # == 3) Contraintes "chaque valeur apparaît une fois par colonne" ==
     for j in range(9):
         for d in range(9):
-            solver.add(PbEq([(x[i][j][d], 1) for i in range(9)], 1))
+            # Au moins une ligne i
+            constraints.append(Or(*(x[i][j][d] for i in range(9))))
+            # Au plus une
+            for i1, i2 in combinations(range(9), 2):
+                constraints.append(Not(And(x[i1][j][d], x[i2][j][d])))
 
-    #
-    # 4) Chaque boîte 3x3, pour chaque valeur d, doit l'avoir exactement 1 fois
-    #
-    for box_i in range(3):
-        for box_j in range(3):
+    # == 4) Contraintes "chaque valeur apparaît une fois par bloc 3x3" ==
+    for box_i in range(3):      # index du bloc ligne (0..2)
+        for box_j in range(3):  # index du bloc colonne (0..2)
             for d in range(9):
-                box_vars = []
+                # Récupère les 9 cases du bloc
+                block_vars = []
                 for di in range(3):
                     for dj in range(3):
-                        i = 3*box_i + di
-                        j = 3*box_j + dj
-                        box_vars.append((x[i][j][d], 1))
-                solver.add(PbEq(box_vars, 1))
+                        i_ = 3 * box_i + di
+                        j_ = 3 * box_j + dj
+                        block_vars.append(x[i_][j_][d])
+                # Au moins une dans ce bloc
+                constraints.append(Or(*block_vars))
+                # Au plus une
+                for (v1, v2) in combinations(block_vars, 2):
+                    constraints.append(Not(And(v1, v2)))
 
-    #
-    # 5) Contraintes initiales (grille partiellement remplie)
-    #
+    # == 5) Contraintes "indices donnés" (cases déjà remplies) ==
     for i, j in product(range(9), range(9)):
         val = grid[i][j]
         if val != 0:
-            d = val - 1  # 0..8
-            # Forcer x[i][j][val-1] = True et le reste = False
-            for dd in range(9):
-                solver.add(x[i][j][dd] == (dd == d))
+            # val est dans [1..9], on force x[i][j][val-1] = True
+            for d in range(9):
+                if d == val - 1:
+                    # doit être True
+                    constraints.append(x[i][j][d])
+                else:
+                    # doit être False
+                    constraints.append(Not(x[i][j][d]))
 
+    # == AJOUT DE TOUTES LES CONTRAINTES EN UNE FOIS ==
+    solver.add(*constraints)
+
+    # == Mesure du temps de résolution ==
     start_time = default_timer()
-    is_sat = solver.check()
+    result = solver.check()
     end_time = default_timer()
+    solve_duration = (end_time - start_time) * 1000.0  # en ms
 
-    if is_sat == sat:
+    if result == sat:
+        print(f"Solution trouvée en {solve_duration:.2f} ms")
         model = solver.model()
-        duration = (end_time - start_time) * 1000
-        print(f"Solution trouvée en {duration:.2f} ms")
 
-        # Extraire la solution
+        # On reconstruit la grille solution en lisant le modèle
         solution = [[0]*9 for _ in range(9)]
         for i, j, d in product(range(9), range(9), range(9)):
             if model[x[i][j][d]]:
@@ -95,8 +107,11 @@ def solve_sudoku_sat(grid):
         print("Aucune solution trouvée.")
         return None
 
-# __main__ pour démonstration
+# -------------------------------------------------------------------------
+# Exemple d'utilisation
 if __name__ == "__main__":
+
+    # Sudoku d'exemple
     instance = (
         (0, 0, 0, 0, 9, 4, 0, 3, 0),
         (0, 0, 0, 5, 1, 0, 0, 0, 7),
@@ -109,14 +124,16 @@ if __name__ == "__main__":
         (0, 4, 0, 9, 7, 0, 0, 0, 0),
     )
 
-    start_global = default_timer()
-    solution = solve_sudoku_sat(instance)
-    end_global = default_timer()
+    # Chrono global
+    t0 = default_timer()
+    sol = solve_sudoku_bool_optimized(instance)
+    t1 = default_timer()
+    total_ms = (t1 - t0) * 1000
 
-    if solution:
+    if sol:
         print("Sudoku résolu :")
-        for row in solution:
+        for row in sol:
             print(row)
-        print(f"Temps total = {(end_global - start_global)*1000:.2f} ms")
+        print(f"Temps total (construction + résolution + modélisation) = {total_ms:.2f} ms.")
     else:
         print("Pas de solution.")
