@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -13,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNPythonSimpleSolver", "CCNPythonSimpleSolver\CCNPythonSimpleSolver.csproj", "{FD037BDA-7C00-4350-A7E5-542F03366EC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.PierreLouis", "Sudoku.PierreLouis\Sudoku.PierreLouis.csproj", "{EF6913D3-ABA6-4949-8E27-7C097800D439}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.GrapheTheory", "Sudoku.GraphTheory\Sudoku.GrapheTheory.csproj", "{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Z3Solvers", "Sudoku.Z3Solvers\Sudoku.Z3Solvers.csproj", "{D10F9276-7EA5-41FA-92D5-3ACAA0775737}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +37,10 @@ Global
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A97624DE-E9A4-473C-AF05-02233C29CB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A97624DE-E9A4-473C-AF05-02233C29CB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A97624DE-E9A4-473C-AF05-02233C29CB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A97624DE-E9A4-473C-AF05-02233C29CB81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,10 +49,14 @@ Global
 		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF6913D3-ABA6-4949-8E27-7C097800D439}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D10F9276-7EA5-41FA-92D5-3ACAA0775737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D10F9276-7EA5-41FA-92D5-3ACAA0775737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D10F9276-7EA5-41FA-92D5-3ACAA0775737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D10F9276-7EA5-41FA-92D5-3ACAA0775737}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
