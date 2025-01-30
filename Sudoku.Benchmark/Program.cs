@@ -99,7 +99,7 @@ namespace Sudoku.Benchmark
 
 		private static bool RunMenu()
 		{
-			Console.WriteLine("Select Mode: \n1-Single Solver Test, \n2-Benchmarks, \n3-Custom Benchmark, \n4-Exit program");
+			Console.WriteLine("Select Mode: \n1 - Single Solver Test, \n2 - Benchmarks, \n3 - Custom Benchmark, \n4 - Norvig \n5 - Exit program");
 			var strMode = Console.ReadLine();
 			int.TryParse(strMode, out var intMode);
 
@@ -114,6 +114,10 @@ namespace Sudoku.Benchmark
 				case 3:
 					CustomBenchmark();
 					break;
+                case 4: 
+                    Norvig();
+                    break;
+                
 				default:
 					return true;
 			}
