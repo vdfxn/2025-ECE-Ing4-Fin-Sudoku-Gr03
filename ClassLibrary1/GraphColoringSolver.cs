@@ -8,7 +8,7 @@ namespace Sudoku.GraphColoringSolver
 {
     public class GraphColoringSolver : ISudokuSolver
     {
-         public SudokuGrid Solve(SudokuGrid s)
+        public SudokuGrid Solve(SudokuGrid s)
         {
             // 1. Construction du graphe du Sudoku
             var graph = BuildSudokuGraph(s);
