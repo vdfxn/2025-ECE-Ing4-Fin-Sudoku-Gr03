@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
+    <ProjectReference Include="..\test\Sudoku.ORToolsSimpleSolver.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

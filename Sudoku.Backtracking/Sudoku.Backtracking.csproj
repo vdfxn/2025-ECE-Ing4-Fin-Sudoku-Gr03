@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
+    <ProjectReference Include="..\test\Sudoku.ORToolsSimpleSolver.csproj" />
   </ItemGroup>
 
   <ItemGroup>
