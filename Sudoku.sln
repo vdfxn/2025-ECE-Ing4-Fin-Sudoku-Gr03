@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Z3Solvers", "Sudoku.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNPythonSimpleSolver", "CCNPythonSimpleSolver\CCNPythonSimpleSolver.csproj", "{FD037BDA-7C00-4350-A7E5-542F03366EC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolver", "Sudoku.ORToolsSolver\Sudoku.ORToolsSolver.csproj", "{BBA5A37B-1911-490E-8A40-4FBCC83552F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD037BDA-7C00-4350-A7E5-542F03366EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBA5A37B-1911-490E-8A40-4FBCC83552F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA5A37B-1911-490E-8A40-4FBCC83552F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA5A37B-1911-490E-8A40-4FBCC83552F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA5A37B-1911-490E-8A40-4FBCC83552F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
