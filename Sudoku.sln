@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Benchmark", "Sudoku.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Shared", "Sudoku.Shared\Sudoku.Shared.csproj", "{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolvers", "Sudoku.ORToolsSolvers\Sudoku.ORToolsSolvers.csproj", "{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
