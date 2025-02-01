@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
     <ProjectReference Include="..\Sudoku.Z3Solvers\Sudoku.Z3Solvers.csproj" />
     <ProjectReference Include="..\Sudoku.ORToolsSolver\Sudoku.ORToolsSolver.csproj" />
+    <ProjectReference Include="..\Sudoku.THHSolver\Sudoku.THHSolver.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
