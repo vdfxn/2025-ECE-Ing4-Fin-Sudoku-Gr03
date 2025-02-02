@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ColorationGrapheRTso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.THHSolver", "Sudoku.THHSolver\Sudoku.THHSolver.csproj", "{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolver", "Sudoku.ORToolsSolver\Sudoku.ORToolsSolver.csproj", "{B9D832CE-C3A5-406F-8D5F-42EA19CF4635}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9D832CE-C3A5-406F-8D5F-42EA19CF4635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9D832CE-C3A5-406F-8D5F-42EA19CF4635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9D832CE-C3A5-406F-8D5F-42EA19CF4635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9D832CE-C3A5-406F-8D5F-42EA19CF4635}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
