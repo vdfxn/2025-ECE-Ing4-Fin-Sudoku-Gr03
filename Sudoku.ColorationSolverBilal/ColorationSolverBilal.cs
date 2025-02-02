@@ -1,10 +1,11 @@
-﻿namespace Sudoku.ColorationSolverBilal;
+﻿
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-public class ColorationSolverBilal
+namespace Sudoku.ColorationSolverBilal
+{
+public class Sudoku.ColorationSolverBilal
 {
     private const int Size = 9;
     private int[,] board;
@@ -119,3 +120,5 @@ public class ColorationSolverBilal
         }
     }
 }
+}  
+
