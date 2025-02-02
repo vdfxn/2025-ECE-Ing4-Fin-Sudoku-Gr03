@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolvers", "Su
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ColorationGrapheRTsolvers", "Sudoku.ColorationGrapheRTsolvers\Sudoku.ColorationGrapheRTsolvers.csproj", "{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.THHSolver", "Sudoku.THHSolver\Sudoku.THHSolver.csproj", "{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
