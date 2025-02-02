@@ -4,5 +4,4 @@
     {
         SudokuGrid Solve(SudokuGrid s);
     }
-
 }
