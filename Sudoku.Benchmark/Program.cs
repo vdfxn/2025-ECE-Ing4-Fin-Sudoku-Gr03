@@ -263,58 +263,85 @@ namespace Sudoku.Benchmark
 
 			var sudokus = SudokuHelper.GetSudokus(difficulty);
 
-			Console.WriteLine($"Choose up to 10 puzzle indices between 1 and {sudokus.Count}, separated by spaces (e.g., '1 5 10')");
-			var strIdx = Console.ReadLine();
-			var indices = strIdx.Split(' ').Select(x => int.Parse(x.Trim()) - 1).Take(10).ToList();
+			//Console.WriteLine($"Choose up to 10 puzzle indices between 1 and {sudokus.Count}, separated by spaces (e.g., '1 5 10')");
+			//var strIdx = Console.ReadLine();
+			//var indices = strIdx.Split(' ').Select(x => int.Parse(x.Trim()) - 1).Take(10).ToList();
+            var indices = Enumerable.Range(0, sudokus.Count).ToList();
 
-			Console.WriteLine("Choose a solver:");
+			//Console.WriteLine("Choose a solver:");
 			var solverList = solvers.ToList();
 			for (int i = 0; i < solvers.Count(); i++)
 			{
 				Console.WriteLine($"{i + 1} - {solverList[i].Key}");
 			}
-			var strSolver = Console.ReadLine();
-			int.TryParse(strSolver, out var intSolver);
+            int intSolver = 6;
+			//var strSolver = Console.ReadLine();
+			//int.TryParse(strSolver, out var intSolver);
 			var solver = solverList[intSolver - 1].Value.Value;
 
 			List<double> executionTimes = new List<double>();
 
-			foreach (var idx in indices)
-			{
-				var targetSudoku = sudokus[idx];
-				Console.WriteLine($"\n--- Resolving Sudoku index {idx + 1} ---");
+            int totalSuccesses = 0; // Total des solutions valides
+            int totalAttempts = 0;  // Total des tentatives
 
-				for (int i = 0; i < 6; i++)
-				{
-					if (i == 0) continue; // Ignore the first run
-					var cloneSudoku = targetSudoku.CloneSudoku();
-					var sw = Stopwatch.StartNew();
+            foreach (var idx in indices)
+            {
+                var targetSudoku = sudokus[idx];
+                Console.WriteLine($"\n--- Resolving Sudoku index {idx + 1} ---");
 
-					cloneSudoku = solver.Solve(cloneSudoku);
+                int successfulSolves = 0; // Compteur de succès pour CE sudoku
 
-					sw.Stop();
-					executionTimes.Add(sw.Elapsed.TotalMilliseconds);
-				}
-			}
+                for (int i = 0; i < 6; i++)
+                {
+                    if (i == 0) continue; // Ignore la première exécution
 
-			Console.WriteLine($"\n--- Global Statistics ---");
-			Console.WriteLine($"Average Time: {executionTimes.Average():F2} ms");
-			Console.WriteLine($"Median Time: {CalculateMedian(executionTimes):F2} ms");
+                    var cloneSudoku = targetSudoku.CloneSudoku();
+                    var sw = Stopwatch.StartNew();
+
+                    cloneSudoku = solver.Solve(cloneSudoku);
+
+                    sw.Stop();
+                    executionTimes.Add(sw.Elapsed.TotalMilliseconds);
+
+                    if (!cloneSudoku.IsValid(targetSudoku))
+                    {
+                        Console.WriteLine($"❌ Invalid Solution {i}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"✅ Valid Solution {i}");
+                        successfulSolves++; // Incrémente le compteur
+                    }
+                }
+
+                int sudokuAttempts = 5; // 5 exécutions mesurées par sudoku (on ignore la première)
+                totalSuccesses += successfulSolves;
+                totalAttempts += sudokuAttempts;
+
+                double successRate = (successfulSolves / (double)sudokuAttempts) * 100;
+                Console.WriteLine($"🎯 Success Rate for Sudoku {idx + 1}: {successRate:F2}%");
+            }
+
+            // Calcul du taux de réussite global
+            double globalSuccessRate = (totalSuccesses / (double)totalAttempts) * 100;
+
+            Console.WriteLine($"\n--- Global Statistics ---");
+            Console.WriteLine($"Average Time: {executionTimes.Average():F2} ms");
+            Console.WriteLine($"Median Time: {CalculateMedian(executionTimes):F2} ms");
+            Console.WriteLine($"🌍 Global Success Rate: {globalSuccessRate:F2}%");
 		}
 
-		private static double CalculateMedian(List<double> values)
-		{
-			values.Sort();
-			if (values.Count % 2 == 0)
-			{
-				return (values[values.Count / 2 - 1] + values[values.Count / 2]) / 2.0;
-			}
-			else
-			{
-				return values[values.Count / 2];
-			}
-		}
+        private static double CalculateMedian(List<double> values)
+        {
+            if (values == null || values.Count == 0)
+                throw new ArgumentException("The list cannot be null or empty.");
 
+            var sortedValues = values.OrderBy(x => x).ToList(); // Copie triée
+            int mid = sortedValues.Count / 2;
 
+            return sortedValues.Count % 2 == 0
+                ? (sortedValues[mid - 1] + sortedValues[mid]) / 2.0
+                : sortedValues[mid];
+        }
 	}
 }
