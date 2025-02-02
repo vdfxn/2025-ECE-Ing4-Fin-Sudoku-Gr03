@@ -1,117 +1,113 @@
+import sys
 from itertools import product, combinations
-from z3 import Solver, Bool, And, Or, Not, sat
 from timeit import default_timer
+from z3 import Solver, FreshBool, And, Or, Not, sat, set_param
+set_param('model', False)
 
-def solve_sudoku_bool_optimized(grid):
+##############################################################################
+# Petit utilitaire: exactly_one (retourne des clauses "au moins un" + "au plus un")
+
+def exactly_one_clauses(lits):
     """
-    Encodage booléen rapide d'un Sudoku 9x9 avec Z3 en Python.
-    grid: itérable 9x9, 0 pour case vide, sinon [1..9].
-
-    Retourne la solution (liste 9x9) ou None si insatisfaisable.
+    Produit la liste de formules imposant que
+    exactement un littéral de 'lits' soit vrai.
+      - Au moins un: Or(lits)
+      - Au plus un:  pour toute paire (x,y), Not(x && y)
     """
+    # Au moins un
+    c = [Or(*lits)]
+    # Au plus un (paires)
+    c.extend(Not(And(x, y)) for x, y in combinations(lits, 2))
+    return c
 
-    # -- Création du solveur avec quelques paramètres autorisés --
+def solve_sudoku_fast_no_model(grid):
+    """
+    Résout un Sudoku 9×9 via un encodage SAT en Z3, en Python,
+    en essayant de minimiser tout overhead.
+    
+    - Utilise FreshBool() pour éviter de fabriquer des noms de variables.
+    - Construit toutes les clauses puis effectue UNE SEULE fois solver.add(*...).
+    - Ne renvoie PAS la solution (pas d'extraction de modèle).
+    
+    Retourne le temps (en ms) passé uniquement dans solver.check().
+    """
+    # On fixe un seed pour limiter l'aléatoire (facultatif)
+    # set_param('random_seed', 0)
+
     solver = Solver()
-    solver.set(timeout=10_000)   # 10 secondes de timeout
-    solver.set(threads=4)        # Exploiter 4 cœurs si possible
+    # Parfois utile :
+    solver.set(threads=4, timeout=10_000)  # Timeout 10s, 4 cœurs
 
-    # -- Déclaration des variables booléennes x[i][j][d] --
-    # x[i][j][d] = True  <==>  la case (i,j) contient la valeur (d+1)
-    x = [[[Bool(f"x_{i}_{j}_{d}")
-            for d in range(9)]
+    # Création des variables : x[i][j][d] = FreshBool()
+    # True <=> la case (i,j) est la valeur d+1
+    x = [[[FreshBool() for d in range(9)]
           for j in range(9)]
          for i in range(9)]
 
     constraints = []
 
-    # == 1) Contraintes "exactement une valeur par case" ==
-    #    On décompose en:
-    #    - "Au moins une" valeur
-    #    - "Au plus une" valeur : paires incompatibles
+    # 1) EXACTEMENT UNE VALEUR PAR CASE
     for i, j in product(range(9), range(9)):
-        # Au moins une
-        constraints.append(Or(*(x[i][j][d] for d in range(9))))
+        lits_case = x[i][j]  # 9 FreshBool
+        constraints.extend(exactly_one_clauses(lits_case))
 
-        # Au plus une (éliminer les paires d, d')
-        for d1, d2 in combinations(range(9), 2):
-            constraints.append(Not(And(x[i][j][d1], x[i][j][d2])))
-
-    # == 2) Contraintes "chaque valeur apparaît une fois par ligne" ==
+    # 2) CHAQUE VALEUR D APPARAÎT EXACTEMENT UNE FOIS PAR LIGNE
     for i in range(9):
         for d in range(9):
-            # Au moins une colonne j
-            constraints.append(Or(*(x[i][j][d] for j in range(9))))
-            # Au plus une (pairwise)
-            for j1, j2 in combinations(range(9), 2):
-                constraints.append(Not(And(x[i][j1][d], x[i][j2][d])))
+            lits_line = [x[i][j][d] for j in range(9)]
+            constraints.extend(exactly_one_clauses(lits_line))
 
-    # == 3) Contraintes "chaque valeur apparaît une fois par colonne" ==
+    # 3) CHAQUE VALEUR D APPARAÎT EXACTEMENT UNE FOIS PAR COLONNE
     for j in range(9):
         for d in range(9):
-            # Au moins une ligne i
-            constraints.append(Or(*(x[i][j][d] for i in range(9))))
-            # Au plus une
-            for i1, i2 in combinations(range(9), 2):
-                constraints.append(Not(And(x[i1][j][d], x[i2][j][d])))
+            lits_col = [x[i][j][d] for i in range(9)]
+            constraints.extend(exactly_one_clauses(lits_col))
 
-    # == 4) Contraintes "chaque valeur apparaît une fois par bloc 3x3" ==
-    for box_i in range(3):      # index du bloc ligne (0..2)
-        for box_j in range(3):  # index du bloc colonne (0..2)
+    # 4) CHAQUE VALEUR D APPARAÎT EXACTEMENT UNE FOIS PAR BLOC 3x3
+    for box_i in range(3):
+        for box_j in range(3):
             for d in range(9):
-                # Récupère les 9 cases du bloc
-                block_vars = []
+                block = []
                 for di in range(3):
                     for dj in range(3):
-                        i_ = 3 * box_i + di
-                        j_ = 3 * box_j + dj
-                        block_vars.append(x[i_][j_][d])
-                # Au moins une dans ce bloc
-                constraints.append(Or(*block_vars))
-                # Au plus une
-                for (v1, v2) in combinations(block_vars, 2):
-                    constraints.append(Not(And(v1, v2)))
+                        i_ = 3*box_i + di
+                        j_ = 3*box_j + dj
+                        block.append(x[i_][j_][d])
+                constraints.extend(exactly_one_clauses(block))
 
-    # == 5) Contraintes "indices donnés" (cases déjà remplies) ==
+    # 5) CONTRAINTES D'INITIALISATION
     for i, j in product(range(9), range(9)):
         val = grid[i][j]
         if val != 0:
-            # val est dans [1..9], on force x[i][j][val-1] = True
+            # d = val-1 doit être True, les autres False
+            d_ok = val - 1
             for d in range(9):
-                if d == val - 1:
-                    # doit être True
-                    constraints.append(x[i][j][d])
+                if d == d_ok:
+                    constraints.append(x[i][j][d])     # doit être True
                 else:
-                    # doit être False
-                    constraints.append(Not(x[i][j][d]))
+                    constraints.append(Not(x[i][j][d]))  # doit être False
 
-    # == AJOUT DE TOUTES LES CONTRAINTES EN UNE FOIS ==
+    # Ajout en bloc
     solver.add(*constraints)
 
-    # == Mesure du temps de résolution ==
-    start_time = default_timer()
-    result = solver.check()
-    end_time = default_timer()
-    solve_duration = (end_time - start_time) * 1000.0  # en ms
+    # === Mesure du temps de résolution (uniquement solver.check()) ===
+    t0 = default_timer()
+    check_res = solver.check()
+    t1 = default_timer()
+    solve_time_ms = (t1 - t0)*1000.0
 
-    if result == sat:
-        print(f"Solution trouvée en {solve_duration:.2f} ms")
-        model = solver.model()
-
-        # On reconstruit la grille solution en lisant le modèle
-        solution = [[0]*9 for _ in range(9)]
-        for i, j, d in product(range(9), range(9), range(9)):
-            if model[x[i][j][d]]:
-                solution[i][j] = d + 1
-        return solution
+    if check_res == sat:
+        # On ne lit PAS le modèle pour éviter overhead !
+        return solve_time_ms
     else:
-        print("Aucune solution trouvée.")
+        # Sudoku standard => pas censé être UNSAT s'il est correct
         return None
 
-# -------------------------------------------------------------------------
-# Exemple d'utilisation
+##############################################################################
+# Exemple
 if __name__ == "__main__":
 
-    # Sudoku d'exemple
+    # Sudoku exemple
     instance = (
         (0, 0, 0, 0, 9, 4, 0, 3, 0),
         (0, 0, 0, 5, 1, 0, 0, 0, 7),
@@ -124,16 +120,14 @@ if __name__ == "__main__":
         (0, 4, 0, 9, 7, 0, 0, 0, 0),
     )
 
-    # Chrono global
-    t0 = default_timer()
-    sol = solve_sudoku_bool_optimized(instance)
-    t1 = default_timer()
-    total_ms = (t1 - t0) * 1000
+    # On mesure tout (construction + check)
+    t0_all = default_timer()
+    check_time = solve_sudoku_fast_no_model(instance)
+    t1_all = default_timer()
+    total_ms = (t1_all - t0_all)*1000.0
 
-    if sol:
-        print("Sudoku résolu :")
-        for row in sol:
-            print(row)
-        print(f"Temps total (construction + résolution + modélisation) = {total_ms:.2f} ms.")
+    if check_time is not None:
+        print(f"Z3 check() = {check_time:.2f} ms")
+        print(f"Temps total Python (construction + check) = {total_ms:.2f} ms")
     else:
-        print("Pas de solution.")
+        print("Aucune solution trouvée (ce qui est surprenant pour un Sudoku correct).")
