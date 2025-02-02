@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -9,6 +9,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Shared", "Sudoku.Shared\Sudoku.Shared.csproj", "{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Constraint", "Sudoku.Constraint\Sudoku.Constraint.csproj", "{DDCBC7DF-0D28-4B82-81ED-6141015317F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ColorationGrapheRTsolvers", "Sudoku.ColorationGrapheRTsolvers\Sudoku.ColorationGrapheRTsolvers.csproj", "{DCD89C79-3E19-4775-BCBA-7EAE5481ACE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCD89C79-3E19-4775-BCBA-7EAE5481ACE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCD89C79-3E19-4775-BCBA-7EAE5481ACE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCD89C79-3E19-4775-BCBA-7EAE5481ACE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCD89C79-3E19-4775-BCBA-7EAE5481ACE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
