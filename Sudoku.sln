@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.PierreLouis", "Sudok
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.GrapheTheory", "Sudoku.GraphTheory\Sudoku.GrapheTheory.csproj", "{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolvers", "Sudoku.ORToolsSolvers\Sudoku.ORToolsSolvers.csproj", "{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ColorationGrapheRTsolvers", "Sudoku.ColorationGrapheRTsolvers\Sudoku.ColorationGrapheRTsolvers.csproj", "{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.THHSolver", "Sudoku.THHSolver\Sudoku.THHSolver.csproj", "{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}"
@@ -32,6 +30,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.SolverBacktrackingSimple", "SolverBacktrackingSimple\Sudoku.SolverBacktrackingSimple.csproj", "{52BD3E2E-9FED-463A-A533-95F9AF7E19D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ColorSolverBilal", "Sudoku.ColorSolverBilal\Sudoku.ColorSolverBilal.csproj", "{00966677-0726-4C8A-85E8-2B63F7B58738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.PSOSolverBilal", "Sudoku.PSOSolverBilal\Sudoku.PSOSolverBilal.csproj", "{608BE637-D323-404C-9CED-230C6FD55A20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.CSPAima", "Sudoku.CSPAima\Sudoku.CSPAima.csproj", "{55EFBA39-8709-4ECF-B3CE-B791263916A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,18 @@ Global
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{608BE637-D323-404C-9CED-230C6FD55A20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{608BE637-D323-404C-9CED-230C6FD55A20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{608BE637-D323-404C-9CED-230C6FD55A20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{608BE637-D323-404C-9CED-230C6FD55A20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9DCEE41-3F77-4DFE-A387-8C5E4E6483FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9DCEE41-3F77-4DFE-A387-8C5E4E6483FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9DCEE41-3F77-4DFE-A387-8C5E4E6483FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9DCEE41-3F77-4DFE-A387-8C5E4E6483FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55EFBA39-8709-4ECF-B3CE-B791263916A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55EFBA39-8709-4ECF-B3CE-B791263916A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55EFBA39-8709-4ECF-B3CE-B791263916A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55EFBA39-8709-4ECF-B3CE-B791263916A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
