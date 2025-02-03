@@ -4,18 +4,18 @@ from dlxsudoku.sudoku import Sudoku
 
 def main():
     # Charger la grille de Sudoku
-    sudoku_file = "2025-ECE-Ing4-Fin-Sudoku-Gr03/sudoku.dancinglink/tests/premier.sud"
-    sudoku = Sudoku.from_file(sudoku_file)
+    sudoku_file = "sudoku.dancinglink/tests/medium.sud"
+    sudoku = Sudoku.load_file(sudoku_file)
     
     # Convertir la grille en problème exact cover
-    dlx_matrix = sudoku.to_exact_cover()
+    dlx_matrix = DancingLinksSolver._exact_cover()
     solver = DancingLinksSolver(dlx_matrix)
     
     # Trouver une solution
     solution = solver.solve()
     
     if solution:
-        solved_sudoku = sudoku.apply_solution(solution)
+        solved_sudoku = sudoku.solve(solution)
         print("Solution trouvée:")
         print(solved_sudoku)
     else:
