@@ -1,8 +1,0 @@
-opencv-python
-tensorflow==2.0.0
-keras
-numpy
-imutils
-sklearn
-skimage
-matplotlib
