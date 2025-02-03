@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Benchmark", "Sudoku.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Shared", "Sudoku.Shared\Sudoku.Shared.csproj", "{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSimpleSolver", "test\Sudoku.ORToolsSimpleSolver.csproj", "{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.GraphColoringSolver", "ClassLibrary1\Sudoku.GraphColoringSolver.csproj", "{6CE26CA9-A778-4A86-A195-A2A30B72F296}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Constraint", "Sudoku.Constraint\Sudoku.Constraint.csproj", "{DDCBC7DF-0D28-4B82-81ED-6141015317F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCNPythonSimpleSolver", "CCNPythonSimpleSolver\CCNPythonSimpleSolver.csproj", "{FD037BDA-7C00-4350-A7E5-542F03366EC9}"
@@ -99,6 +103,14 @@ Global
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
