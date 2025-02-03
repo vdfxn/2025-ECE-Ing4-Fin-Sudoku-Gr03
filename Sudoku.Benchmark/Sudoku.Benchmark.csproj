@@ -17,8 +17,10 @@
   <ItemGroup>
     <ProjectReference Include="../SolverBacktrackingSimple/Sudoku.SolverBacktrackingSimple.csproj" />
     <ProjectReference Include="..\Sudoku.JM\Sudoku.JM.csproj" />
+    <ProjectReference Include="..\Sudoku.quickgraph\Sudoku.quickgraph.csproj" />
     <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
+    <ProjectReference Include="..\Sudoku.Solverameliorer\Sudoku.Solverameliorer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
