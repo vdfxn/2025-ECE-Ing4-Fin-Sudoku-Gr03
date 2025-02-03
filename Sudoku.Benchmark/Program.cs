@@ -274,7 +274,9 @@ namespace Sudoku.Benchmark
 			{
 				Console.WriteLine($"{i + 1} - {solverList[i].Key}");
 			}
-            int intSolver = 6;
+
+            int intSolver = 7;
+
 			//var strSolver = Console.ReadLine();
 			//int.TryParse(strSolver, out var intSolver);
 			var solver = solverList[intSolver - 1].Value.Value;
