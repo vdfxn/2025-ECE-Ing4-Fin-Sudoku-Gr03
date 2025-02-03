@@ -1,118 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Google.OrTools.Sat;
 using Sudoku.Shared;
 
 namespace Sudoku.Constraint
 {
     public class ConstraintSimpleSolver : ISudokuSolver
     {
-        private Dictionary<(int, int), HashSet<int>> domains;
-
         public SudokuGrid Solve(SudokuGrid s)
         {
-            // Initialisation des domaines possibles pour chaque case
-            InitializeDomains(s);
+            CpModel model = new CpModel();
+            IntVar[,] grid = new IntVar[9, 9];
             
-            // Résolution avec programmation par contraintes
-            if (SolveSudoku(s))
-            {
-                return s;
-            }
-
-            throw new Exception("No solution found");
-        }
-
-        private void InitializeDomains(SudokuGrid s)
-        {
-            domains = new Dictionary<(int, int), HashSet<int>>();
-
-            for (int row = 0; row < 9; row++)
-            {
-                for (int col = 0; col < 9; col++)
-                {
-                    if (s.Cells[row, col] == 0)
-                    {
-                        domains[(row, col)] = GetPossibleValues(s, row, col);
-                    }
-                }
-            }
-        }
-
-        private bool SolveSudoku(SudokuGrid s)
-        {
-            if (!domains.Any()) return true; // Toutes les cases sont remplies
-
-            // Sélectionner la case avec le moins de choix possibles (MRV)
-            var (row, col) = domains.OrderBy(d => d.Value.Count).First().Key;
-            var possibleValues = domains[(row, col)].ToList();
-
-            // Supprimer la case de la liste des domaines
-            domains.Remove((row, col));
-
-            foreach (var num in possibleValues)
-            {
-                // Créer une copie de l'état actuel des domaines
-                var backupDomains = domains.ToDictionary(d => d.Key, d => new HashSet<int>(d.Value));
-
-                s.Cells[row, col] = num;
-                if (ForwardCheck(s, row, col, num))
-                {
-                    if (SolveSudoku(s)) return true;
-                }
-
-                // Restaurer l'état précédent si l'essai échoue
-                s.Cells[row, col] = 0;
-                domains = backupDomains;
-            }
-
-            // Réinsérer la case dans les domaines pour d'autres essais
-            domains[(row, col)] = new HashSet<int>(possibleValues);
-            return false;
-        }
-
-        private bool ForwardCheck(SudokuGrid s, int row, int col, int num)
-        {
-            foreach (var (r, c) in GetRelatedCells(row, col))
-            {
-                if (domains.ContainsKey((r, c)))
-                {
-                    domains[(r, c)].Remove(num);
-                    if (domains[(r, c)].Count == 0) return false; // Échec si une case n'a plus d'options
-                }
-            }
-            return true;
-        }
-
-        private HashSet<int> GetPossibleValues(SudokuGrid s, int row, int col)
-        {
-            var possibleValues = new HashSet<int>(Enumerable.Range(1, 9));
-
-            foreach (var (r, c) in GetRelatedCells(row, col))
-            {
-                possibleValues.Remove(s.Cells[r, c]);
-            }
-
-            return possibleValues;
-        }
-
-        private IEnumerable<(int, int)> GetRelatedCells(int row, int col)
-        {
+            // Déclaration des variables avec domaine {1-9}
             for (int i = 0; i < 9; i++)
             {
-                yield return (row, i); // Ligne
-                yield return (i, col); // Colonne
+                for (int j = 0; j < 9; j++)
+                {
+                    grid[i, j] = model.NewIntVar(1, 9, $"cell_{i}_{j}");
+                }
             }
-
-            int startRow = (row / 3) * 3;
-            int startCol = (col / 3) * 3;
+            
+            // Contraintes de lignes et colonnes
+            for (int i = 0; i < 9; i++)
+            {
+                model.AddAllDifferent(GetRow(grid, i));
+                model.AddAllDifferent(GetColumn(grid, i));
+            }
+            
+            // Contraintes des sous-grilles 3x3
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    yield return (startRow + i, startCol + j); // Bloc 3x3
+                    model.AddAllDifferent(GetSubGrid(grid, i * 3, j * 3));
                 }
             }
+            
+            // Appliquer la grille initiale
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (s.Cells[i, j] != 0)
+                    {
+                        model.Add(grid[i, j] == s.Cells[i, j]);
+                    }
+                }
+            }
+            
+            // Résolution
+            CpSolver solver = new CpSolver();
+            CpSolverStatus status = solver.Solve(model);
+            
+            if (status == CpSolverStatus.Optimal || status == CpSolverStatus.Feasible)
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        s.Cells[i, j] = (int)solver.Value(grid[i, j]);
+                    }
+                }
+            }
+            
+            return s;
+        }
+        
+        private IntVar[] GetRow(IntVar[,] grid, int row)
+        {
+            return Enumerable.Range(0, 9).Select(j => grid[row, j]).ToArray();
+        }
+        
+        private IntVar[] GetColumn(IntVar[,] grid, int col)
+        {
+            return Enumerable.Range(0, 9).Select(i => grid[i, col]).ToArray();
+        }
+        
+        private IntVar[] GetSubGrid(IntVar[,] grid, int row, int col)
+        {
+            return Enumerable.Range(0, 3)
+                .SelectMany(i => Enumerable.Range(0, 3).Select(j => grid[row + i, col + j]))
+                .ToArray();
         }
     }
 }
