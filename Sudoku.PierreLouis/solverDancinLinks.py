@@ -39,4 +39,4 @@ def solve_grids(file_path):
     total_time = total_end_time - total_start_time
     print(f"Temps total de résolution : {total_time:.4f} secondes")
 
-solve_grids('Sudoku.PierreLouis/sudokus/grids_2.sud')
+solve_grids('Sudoku.PierreLouis/sudokus/grids_1.sud')
