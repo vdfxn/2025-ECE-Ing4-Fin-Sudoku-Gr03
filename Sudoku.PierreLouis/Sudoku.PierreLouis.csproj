@@ -7,14 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Sudoku.Benchmark/Sudoku.Benchmark.csproj" />
     <ProjectReference Include="../Sudoku.Shared/Sudoku.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="solve_sudoku.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="training\models\sudoku_model.h5">
+    <None Update="solverDancinLinks.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
