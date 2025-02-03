@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.PierreLouis", "Sudok
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.GrapheTheory", "Sudoku.GraphTheory\Sudoku.GrapheTheory.csproj", "{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolvers", "Sudoku.ORToolsSolvers\Sudoku.ORToolsSolvers.csproj", "{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ColorationGrapheRTsolvers", "Sudoku.ColorationGrapheRTsolvers\Sudoku.ColorationGrapheRTsolvers.csproj", "{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.THHSolver", "Sudoku.THHSolver\Sudoku.THHSolver.csproj", "{5AE7E267-D9F2-4CF8-83AB-273B6C1EA739}"
@@ -55,6 +53,14 @@ Global
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA1F5A1A-B3F0-4107-A42D-17D0F9359E27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDCBC7DF-0D28-4B82-81ED-6141015317F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,10 +77,6 @@ Global
 		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20C757E6-8BAA-4E8A-8826-4A3704FB5D32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C6C23C5-159D-4F7B-BDF5-502E2005C7B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B6DC7EE-83EF-4AA8-9455-6FF9953E3049}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -103,14 +105,6 @@ Global
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00966677-0726-4C8A-85E8-2B63F7B58738}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CC9C89A-20D6-4A6D-8CB8-A65FA0C5181D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CE26CA9-A778-4A86-A195-A2A30B72F296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
