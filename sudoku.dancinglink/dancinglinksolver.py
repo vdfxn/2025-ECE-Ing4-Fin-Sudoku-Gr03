@@ -4,11 +4,11 @@ from dlxsudoku.sudoku import Sudoku
 
 def main():
     # Charger la grille de Sudoku
-    sudoku_file = "sudoku.dancinglink/tests/medium.sud"
+    sudoku_file = "sudoku.dancinglink/tests/hard.sud"
     sudoku = Sudoku.load_file(sudoku_file)
     
     # Convertir la grille en problème exact cover
-    dlx_matrix = DancingLinksSolver._exact_cover()
+    dlx_matrix = sudoku.to_exact_cover_matrix()
     solver = DancingLinksSolver(dlx_matrix)
     
     # Trouver une solution

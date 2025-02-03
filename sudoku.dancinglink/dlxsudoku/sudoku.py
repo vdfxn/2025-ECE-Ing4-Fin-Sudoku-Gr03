@@ -17,6 +17,7 @@ from __future__ import print_function
 import os
 import copy
 import math
+import itertools
 from collections import Counter
 
 from dlxsudoku.exceptions import (
@@ -53,6 +54,28 @@ class Sudoku(object):
         self._possibles = {}
 
         self._check_sudoku_validity()
+
+    def to_exact_cover_matrix(self):
+        
+        size = self.order ** 2  # Taille de la grille
+        n = self.order  # Racine carrée de l'ordre, i.e., taille d'un sous-carré
+        matrix = []
+    
+        for i in range(size):
+            for j in range(size):
+                for v in range(1, size + 1):
+                    row = [0] * (3 * size * size)
+                
+                    # Calcul de l'indice pour la contrainte de ligne
+                    row[i] = 1  # Contradiction pour la ligne
+                    row[size + j] = 1  # Contrainte pour la colonne
+                    row[2 * size + (i // n) * n + (j // n)] = 1  # Contrainte pour la case de sous-carré
+                    row[3 * size + (i * n + j) * n + v - 1] = 1  # Contrainte de valeur (i, j, v)
+                
+                    # Ajout de cette ligne à la matrice
+                    matrix.append(row)
+    
+        return matrix
 
     @classmethod
     def load_file(cls, file_path):
@@ -464,6 +487,8 @@ def main():
         print(s.to_oneliner())
     else:
         print(s)
+
+
 
 
 if __name__ == "__main__":
