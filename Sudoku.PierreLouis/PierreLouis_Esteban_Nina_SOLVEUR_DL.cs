@@ -7,14 +7,14 @@ using Sudoku.Shared;
 
 namespace Sudoku.Pierrelouis
 {
-	public class PierrelouisDotNetSolver : ISudokuSolver
+	public class PierreLouis_Esteban_Nina_SOLVEUR_DL : ISudokuSolver
 	{
 		public SudokuGrid Solve(SudokuGrid s)
 		{
 			//launch the solver
 			callCount = 0;
 			Search(s, 0, 0);
-			Console.WriteLine("PierrelouisDotNetSolver: " + callCount + " search calls");
+			Console.WriteLine("PierreLouis_Esteban_Nina_SOLVEUR_DL: " + callCount + " search calls");
 			return s;
 		}
 
