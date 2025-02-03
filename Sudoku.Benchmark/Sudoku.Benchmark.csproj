@@ -30,6 +30,8 @@
     <ProjectReference Include="..\Sudoku.ORToolsSolver\Sudoku.ORToolsSolver.csproj" />
     <ProjectReference Include="..\Sudoku.THHSolver\Sudoku.THHSolver.csproj" />
     <ProjectReference Include="..\Sudoku.ColorSolverBilal\Sudoku.ColorSolverBilal.csproj" />
+    <ProjectReference Include="..\Sudoku.ChocoSolverBilal\Sudoku.ChocoSolverBilal.csproj" />
+    <ProjectReference Include="..\Sudoku.CSPAima\Sudoku.CSPAima.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
