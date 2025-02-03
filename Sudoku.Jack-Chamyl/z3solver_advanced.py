@@ -1,93 +1,63 @@
-from itertools import product, combinations
-from z3 import Solver, Bool, And, Or, Not, sat
-from timeit import default_timer
+from z3 import Solver, Int, And, Distinct, sat
 
-class Z3SolverBase:
-    def __init__(self, grid, timeout=10_000, threads=4):
-        self.grid = grid
-        self.solver = Solver()
-        self.solver.set(timeout=timeout)
-        self.solver.set(threads=threads)
-        # Création des variables booléennes
-        self.x = [[[Bool(f"x_{i}_{j}_{d}") for d in range(9)]
-                   for j in range(9)] for i in range(9)]
-        self.constraints = []
-        self.add_cell_constraints()
-        self.add_row_constraints()
-        self.add_col_constraints()
-        self.add_block_constraints()
-        self.add_given_constraints()
-        self.solver.add(*self.constraints)
+def solve_sudoku(instance):
+    """
+    Résout un Sudoku 9x9 en utilisant une variable entière par case.
 
-    def add_cell_constraints(self):
-        # Chaque case doit contenir exactement une valeur.
-        for i, j in product(range(9), range(9)):
-            # Au moins une valeur
-            self.constraints.append(Or(*(self.x[i][j][d] for d in range(9))))
-            # Au plus une valeur (exclusion pairwise)
-            for d1, d2 in combinations(range(9), 2):
-                self.constraints.append(Not(And(self.x[i][j][d1], self.x[i][j][d2])))
+    Paramètre:
+      instance: liste de 9 listes (chacune de 9 entiers) représentant la grille.
+                La valeur 0 indique une case vide.
 
-    def add_row_constraints(self):
-        # Chaque chiffre apparaît exactement une fois par ligne.
-        for i in range(9):
-            for d in range(9):
-                self.constraints.append(Or(*(self.x[i][j][d] for j in range(9))))
-                for j1, j2 in combinations(range(9), 2):
-                    self.constraints.append(Not(And(self.x[i][j1][d], self.x[i][j2][d])))
+    Retourne:
+      Un tuple (status, solution) où:
+       - status est "sat" si une solution a été trouvée,
+       - solution est une liste de listes (9x9) contenant la solution.
+    """
+    solver = Solver()
 
-    def add_col_constraints(self):
-        # Chaque chiffre apparaît exactement une fois par colonne.
+    # Création d'une matrice 9x9 de variables entières.
+    cells = [[Int(f"cell_{i}_{j}") for j in range(9)] for i in range(9)]
+
+    # Contrainte pour chaque cellule : valeur entre 1 et 9 (en une seule contrainte).
+    for i in range(9):
         for j in range(9):
-            for d in range(9):
-                self.constraints.append(Or(*(self.x[i][j][d] for i in range(9))))
-                for i1, i2 in combinations(range(9), 2):
-                    self.constraints.append(Not(And(self.x[i1][j][d], self.x[i2][j][d])))
+            solver.add(And(cells[i][j] >= 1, cells[i][j] <= 9))
 
-    def add_block_constraints(self):
-        # Chaque chiffre apparaît exactement une fois par bloc 3x3.
-        for box_i in range(3):
-            for box_j in range(3):
-                for d in range(9):
-                    block_vars = []
-                    for di in range(3):
-                        for dj in range(3):
-                            i_ = 3 * box_i + di
-                            j_ = 3 * box_j + dj
-                            block_vars.append(self.x[i_][j_][d])
-                    self.constraints.append(Or(*block_vars))
-                    for v1, v2 in combinations(block_vars, 2):
-                        self.constraints.append(Not(And(v1, v2)))
+    # Contraintes sur les lignes : chaque ligne contient des valeurs distinctes.
+    for i in range(9):
+        solver.add(Distinct(cells[i]))
 
-    def add_given_constraints(self):
-        # Contraintes pour les cases déjà remplies dans la grille.
-        for i, j in product(range(9), range(9)):
-            val = self.grid[i][j]
+    # Contraintes sur les colonnes : chaque colonne contient des valeurs distinctes.
+    for j in range(9):
+        col = [cells[i][j] for i in range(9)]
+        solver.add(Distinct(col))
+
+    # Contraintes sur les blocs 3x3 : chaque bloc contient des valeurs distinctes.
+    for bi in range(3):
+        for bj in range(3):
+            block = []
+            for di in range(3):
+                for dj in range(3):
+                    block.append(cells[3 * bi + di][3 * bj + dj])
+            solver.add(Distinct(block))
+
+    # Appliquer les valeurs déjà données dans la grille d'entrée.
+    for i in range(9):
+        for j in range(9):
+            val = instance[i][j]
             if val != 0:
-                for d in range(9):
-                    if d == val - 1:
-                        self.constraints.append(self.x[i][j][d])
-                    else:
-                        self.constraints.append(Not(self.x[i][j][d]))
+                solver.add(cells[i][j] == val)
 
-    def solve(self):
-        start_time = default_timer()
-        result = self.solver.check()
-        end_time = default_timer()
-        duration_ms = (end_time - start_time) * 1000
-        if result == sat:
-            print(f"Solution trouvée en {duration_ms:.2f} ms")
-            model = self.solver.model()
-            solution = [[0]*9 for _ in range(9)]
-            for i, j, d in product(range(9), range(9), range(9)):
-                if model[self.x[i][j][d]]:
-                    solution[i][j] = d + 1
-            return solution
-        else:
-            print("Aucune solution trouvée.")
-            return None
+    # Résolution du problème
+    if solver.check() == sat:
+        model = solver.model()
+        # Reconstruction de la solution sous forme d'une grille 9x9.
+        solution = [[model.evaluate(cells[i][j]).as_long() for j in range(9)] for i in range(9)]
+        return ("sat", solution)
+    else:
+        return ("unsat", None)
 
-# Exemple d'utilisation :
+# Test local (lorsque le script est exécuté directement)
 if __name__ == "__main__":
     instance = (
         (0, 0, 0, 0, 9, 4, 0, 3, 0),
@@ -100,9 +70,10 @@ if __name__ == "__main__":
         (9, 0, 0, 0, 6, 5, 0, 0, 0),
         (0, 4, 0, 9, 7, 0, 0, 0, 0),
     )
-    solver = Z3SolverBase(instance)
-    solution = solver.solve()
-    if solution:
+    status, sol = solve_sudoku(instance)
+    if status == "sat":
         print("Sudoku résolu :")
-        for row in solution:
+        for row in sol:
             print(row)
+    else:
+        print("Pas de solution")
