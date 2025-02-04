@@ -12,10 +12,10 @@ namespace Sudoku.ColorSolverBilal
 
         public SudokuGrid Solve(SudokuGrid sudoku)
         {
-            int[,] board = sudoku.Cells;
+            int[,] board = (int[,])sudoku.Cells.Clone();
             Dictionary<(int, int), HashSet<int>> domains = InitializeDomains(board);
 
-            if (ColorSudoku(board, domains))
+            if (SolveWithBacktracking(board, domains))
             {
                 sudoku.Cells = board;
             }
@@ -25,7 +25,7 @@ namespace Sudoku.ColorSolverBilal
 
         private Dictionary<(int, int), HashSet<int>> InitializeDomains(int[,] board)
         {
-            Dictionary<(int, int), HashSet<int>> domains = new();
+            var domains = new Dictionary<(int, int), HashSet<int>>();
 
             for (int row = 0; row < Size; row++)
             {
@@ -42,8 +42,8 @@ namespace Sudoku.ColorSolverBilal
 
         private HashSet<int> GetPossibleValues(int[,] board, int row, int col)
         {
-            HashSet<int> possibleValues = new(Enumerable.Range(1, 9));
-
+            var possibleValues = new HashSet<int>(Enumerable.Range(1, 9));
+            
             for (int i = 0; i < Size; i++)
             {
                 possibleValues.Remove(board[row, i]); // Ligne
@@ -52,6 +52,7 @@ namespace Sudoku.ColorSolverBilal
 
             int startRow = (row / SubgridSize) * SubgridSize;
             int startCol = (col / SubgridSize) * SubgridSize;
+            
             for (int i = 0; i < SubgridSize; i++)
             {
                 for (int j = 0; j < SubgridSize; j++)
@@ -63,17 +64,14 @@ namespace Sudoku.ColorSolverBilal
             return possibleValues;
         }
 
-        private bool ColorSudoku(int[,] board, Dictionary<(int, int), HashSet<int>> domains)
+        private bool SolveWithBacktracking(int[,] board, Dictionary<(int, int), HashSet<int>> domains)
         {
             if (!domains.Any()) return true;
 
-            // 🔥 HEURISTIQUE MRV + DEGRE
-            var emptyCell = domains.OrderBy(d => d.Value.Count)
-                                   .ThenByDescending(d => GetDegree(board, d.Key.Item1, d.Key.Item2))
-                                   .First();
-            int row = emptyCell.Key.Item1;
-            int col = emptyCell.Key.Item2;
-            List<int> values = emptyCell.Value.OrderBy(v => GetLeastConstrainingValue(board, row, col, v)).ToList();
+            var cell = domains.OrderBy(d => d.Value.Count).First();
+            int row = cell.Key.Item1;
+            int col = cell.Key.Item2;
+            List<int> values = cell.Value.OrderBy(v => GetConstrainingValueCount(board, row, col, v)).ToList();
 
             foreach (int value in values)
             {
@@ -82,12 +80,11 @@ namespace Sudoku.ColorSolverBilal
                     board[row, col] = value;
                     var affectedDomains = ForwardCheck(domains, row, col, value);
 
-                    if (affectedDomains != null && ColorSudoku(board, domains))
+                    if (affectedDomains != null && SolveWithBacktracking(board, domains))
                     {
                         return true;
                     }
 
-                    // BACKTRACK
                     board[row, col] = 0;
                     RestoreDomains(domains, affectedDomains);
                 }
@@ -96,31 +93,7 @@ namespace Sudoku.ColorSolverBilal
             return false;
         }
 
-        // 🔥 HEURISTIQUE DU DEGRÉ : compte combien de cases sont affectées
-        private int GetDegree(int[,] board, int row, int col)
-        {
-            int count = 0;
-            for (int i = 0; i < Size; i++)
-            {
-                if (board[row, i] == 0) count++;
-                if (board[i, col] == 0) count++;
-            }
-
-            int startRow = (row / SubgridSize) * SubgridSize;
-            int startCol = (col / SubgridSize) * SubgridSize;
-            for (int i = 0; i < SubgridSize; i++)
-            {
-                for (int j = 0; j < SubgridSize; j++)
-                {
-                    if (board[startRow + i, startCol + j] == 0) count++;
-                }
-            }
-
-            return count;
-        }
-
-        // 🔥 VALEUR LA MOINS CONTRAIGNANTE
-        private int GetLeastConstrainingValue(int[,] board, int row, int col, int value)
+        private int GetConstrainingValueCount(int[,] board, int row, int col, int value)
         {
             int count = 0;
             for (int i = 0; i < Size; i++)
@@ -131,10 +104,9 @@ namespace Sudoku.ColorSolverBilal
             return count;
         }
 
-        // 🔥 FORWARD CHECKING : met à jour les domaines après une assignation
         private Dictionary<(int, int), HashSet<int>> ForwardCheck(Dictionary<(int, int), HashSet<int>> domains, int row, int col, int value)
         {
-            Dictionary<(int, int), HashSet<int>> affected = new();
+            var affected = new Dictionary<(int, int), HashSet<int>>();
 
             foreach (var key in domains.Keys.ToList())
             {
@@ -147,7 +119,6 @@ namespace Sudoku.ColorSolverBilal
 
                         if (domains[key].Count == 0)
                         {
-                            // Problème détecté, on annule l'opération
                             RestoreDomains(domains, affected);
                             return null;
                         }
@@ -158,11 +129,10 @@ namespace Sudoku.ColorSolverBilal
             return affected;
         }
 
-        // 🔥 RESTAURATION DES DOMAINES APRÈS BACKTRACKING
         private void RestoreDomains(Dictionary<(int, int), HashSet<int>> domains, Dictionary<(int, int), HashSet<int>> affected)
         {
             if (affected == null) return;
-
+            
             foreach (var key in affected.Keys)
             {
                 domains[key] = affected[key];
@@ -173,8 +143,8 @@ namespace Sudoku.ColorSolverBilal
         {
             for (int i = 0; i < Size; i++)
             {
-                if (board[row, i] == value && i != col) return false;
-                if (board[i, col] == value && i != row) return false;
+                if (board[row, i] == value) return false;
+                if (board[i, col] == value) return false;
             }
 
             int startRow = (row / SubgridSize) * SubgridSize;
@@ -183,10 +153,7 @@ namespace Sudoku.ColorSolverBilal
             {
                 for (int j = 0; j < SubgridSize; j++)
                 {
-                    if (board[startRow + i, startCol + j] == value && (startRow + i != row || startCol + j != col))
-                    {
-                        return false;
-                    }
+                    if (board[startRow + i, startCol + j] == value) return false;
                 }
             }
 
