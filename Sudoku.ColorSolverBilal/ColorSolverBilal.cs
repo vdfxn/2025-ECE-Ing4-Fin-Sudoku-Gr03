@@ -13,7 +13,7 @@ namespace Sudoku.ColorSolverBilal
         public SudokuGrid Solve(SudokuGrid sudoku)
         {
             int[,] board = (int[,])sudoku.Cells.Clone();
-            Dictionary<(int, int), HashSet<int>> domains = InitializeDomains(board);
+            Dictionary<(int, int), int> domains = InitializeDomains(board);
 
             if (SolveWithBacktracking(board, domains))
             {
@@ -23,9 +23,9 @@ namespace Sudoku.ColorSolverBilal
             return sudoku;
         }
 
-        private Dictionary<(int, int), HashSet<int>> InitializeDomains(int[,] board)
+        private Dictionary<(int, int), int> InitializeDomains(int[,] board)
         {
-            var domains = new Dictionary<(int, int), HashSet<int>>();
+            var domains = new Dictionary<(int, int), int>();
 
             for (int row = 0; row < Size; row++)
             {
@@ -40,84 +40,79 @@ namespace Sudoku.ColorSolverBilal
             return domains;
         }
 
-        private HashSet<int> GetPossibleValues(int[,] board, int row, int col)
+        private int GetPossibleValues(int[,] board, int row, int col)
         {
-            var possibleValues = new HashSet<int>(Enumerable.Range(1, 9));
-            
+            int possibleValues = 0b111111111; // Toutes les valeurs de 1 à 9 sont possibles
+
             for (int i = 0; i < Size; i++)
             {
-                possibleValues.Remove(board[row, i]); // Ligne
-                possibleValues.Remove(board[i, col]); // Colonne
+                if (board[row, i] != 0) possibleValues &= ~(1 << (board[row, i] - 1)); // Ligne
+                if (board[i, col] != 0) possibleValues &= ~(1 << (board[i, col] - 1)); // Colonne
             }
 
             int startRow = (row / SubgridSize) * SubgridSize;
             int startCol = (col / SubgridSize) * SubgridSize;
-            
+
             for (int i = 0; i < SubgridSize; i++)
             {
                 for (int j = 0; j < SubgridSize; j++)
                 {
-                    possibleValues.Remove(board[startRow + i, startCol + j]);
+                    if (board[startRow + i, startCol + j] != 0)
+                    {
+                        possibleValues &= ~(1 << (board[startRow + i, startCol + j] - 1)); // Bloc
+                    }
                 }
             }
 
             return possibleValues;
         }
 
-        private bool SolveWithBacktracking(int[,] board, Dictionary<(int, int), HashSet<int>> domains)
+        private bool SolveWithBacktracking(int[,] board, Dictionary<(int, int), int> domains)
         {
             if (!domains.Any()) return true;
 
-            var cell = domains.OrderBy(d => d.Value.Count).First();
+            var cell = domains.OrderBy(d => BitCount(d.Value)).First();
             int row = cell.Key.Item1;
             int col = cell.Key.Item2;
-            List<int> values = cell.Value.OrderBy(v => GetConstrainingValueCount(board, row, col, v)).ToList();
+            int possibleValues = cell.Value;
 
-            foreach (int value in values)
+            for (int value = 1; value <= Size; value++)
             {
-                if (IsValidAssignment(board, row, col, value))
+                if ((possibleValues & (1 << (value - 1))) != 0)
                 {
-                    board[row, col] = value;
-                    var affectedDomains = ForwardCheck(domains, row, col, value);
-
-                    if (affectedDomains != null && SolveWithBacktracking(board, domains))
+                    if (IsValidAssignment(board, row, col, value))
                     {
-                        return true;
-                    }
+                        board[row, col] = value;
+                        var affectedDomains = ForwardCheck(domains, row, col, value);
 
-                    board[row, col] = 0;
-                    RestoreDomains(domains, affectedDomains);
+                        if (affectedDomains != null && SolveWithBacktracking(board, domains))
+                        {
+                            return true;
+                        }
+
+                        board[row, col] = 0;
+                        RestoreDomains(domains, affectedDomains);
+                    }
                 }
             }
 
             return false;
         }
 
-        private int GetConstrainingValueCount(int[,] board, int row, int col, int value)
+        private Dictionary<(int, int), int> ForwardCheck(Dictionary<(int, int), int> domains, int row, int col, int value)
         {
-            int count = 0;
-            for (int i = 0; i < Size; i++)
-            {
-                if (board[row, i] == 0 && GetPossibleValues(board, row, i).Contains(value)) count++;
-                if (board[i, col] == 0 && GetPossibleValues(board, i, col).Contains(value)) count++;
-            }
-            return count;
-        }
-
-        private Dictionary<(int, int), HashSet<int>> ForwardCheck(Dictionary<(int, int), HashSet<int>> domains, int row, int col, int value)
-        {
-            var affected = new Dictionary<(int, int), HashSet<int>>();
+            var affected = new Dictionary<(int, int), int>();
 
             foreach (var key in domains.Keys.ToList())
             {
                 if (key.Item1 == row || key.Item2 == col || (key.Item1 / SubgridSize == row / SubgridSize && key.Item2 / SubgridSize == col / SubgridSize))
                 {
-                    if (domains[key].Contains(value))
+                    if ((domains[key] & (1 << (value - 1))) != 0)
                     {
-                        affected[key] = new HashSet<int>(domains[key]);
-                        domains[key].Remove(value);
+                        affected[key] = domains[key];
+                        domains[key] &= ~(1 << (value - 1));
 
-                        if (domains[key].Count == 0)
+                        if (domains[key] == 0)
                         {
                             RestoreDomains(domains, affected);
                             return null;
@@ -129,10 +124,10 @@ namespace Sudoku.ColorSolverBilal
             return affected;
         }
 
-        private void RestoreDomains(Dictionary<(int, int), HashSet<int>> domains, Dictionary<(int, int), HashSet<int>> affected)
+        private void RestoreDomains(Dictionary<(int, int), int> domains, Dictionary<(int, int), int> affected)
         {
             if (affected == null) return;
-            
+
             foreach (var key in affected.Keys)
             {
                 domains[key] = affected[key];
@@ -158,6 +153,17 @@ namespace Sudoku.ColorSolverBilal
             }
 
             return true;
+        }
+
+        private int BitCount(int value)
+        {
+            int count = 0;
+            while (value != 0)
+            {
+                count++;
+                value &= value - 1;
+            }
+            return count;
         }
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Sudoku.ORToolsSolver
-{
+{1
     public class ORToolsSolver : ISudokuSolver
     {
         public SudokuGrid Solve(SudokuGrid grid)
