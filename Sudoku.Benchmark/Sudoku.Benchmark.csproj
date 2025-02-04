@@ -21,7 +21,6 @@
     <ProjectReference Include="..\Sudoku.Jack-Chamyl\Sudoku.Z3Solvers.csproj" />
     <ProjectReference Include="..\Sudoku.PierreLouis\Sudoku.PierreLouis.csproj" />
     <ProjectReference Include="../Sudoku.Constraint/Sudoku.Constraint.csproj" />
-    <ProjectReference Include="..\Sudoku.ORToolsSolvers\Sudoku.ORToolsSolvers.csproj" />
     <ProjectReference Include="../SolverBacktrackingSimple/Sudoku.SolverBacktrackingSimple.csproj" />
     <ProjectReference Include="..\Sudoku.JM\Sudoku.JM.csproj" />
     <ProjectReference Include="..\ClassLibrary1\Sudoku.GraphColoringSolver.csproj" />
