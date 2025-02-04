@@ -4,7 +4,7 @@ from dlxsudoku.sudoku import Sudoku
 
 def main():
     # Charger la grille de Sudoku
-    sudoku_file = "sudoku.dancinglink/tests/hard.sud"
+    sudoku_file = "sudoku.dancinglink_Rouanet_Robert_Rivain/tests/hard.sud"
     sudoku = Sudoku.load_file(sudoku_file)
     
     # Convertir la grille en problème exact cover
