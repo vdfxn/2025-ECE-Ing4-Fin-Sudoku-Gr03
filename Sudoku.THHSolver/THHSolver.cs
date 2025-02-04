@@ -7,97 +7,234 @@ namespace Sudoku.THHSolver
 {
     public class THHSolver : ISudokuSolver
     {
-        public SudokuGrid Solve(SudokuGrid grid)
+        private int[] _grid; // Grille de Sudoku (tableau 1D pour plus de performance)
+        private List<int>[] _candidates; // Candidats pour chaque case
+
+        // Pré-calcul des indices pour chaque ligne, colonne et bloc
+        private static readonly int[][] _units = new int[27][];
+        private static readonly int[][] _peers = new int[81][];
+
+        static THHSolver()
         {
-            bool solved = false;
-
-            while (!solved)
+            // Initialisation des unités et des pairs
+            for (int i = 0; i < 9; i++)
             {
-                solved = true;
-                // Répéter les étapes jusqu'à ce qu'il n'y ait plus de cases évidentes à remplir
+                // Lignes
+                _units[i] = Enumerable.Range(i * 9, 9).ToArray();
+                // Colonnes
+                _units[i + 9] = Enumerable.Range(i, 9).Select(x => x * 9 + i).ToArray();
+                // Blocs
+                int startRow = (i / 3) * 3;
+                int startCol = (i % 3) * 3;
+                _units[i + 18] = Enumerable.Range(0, 9).Select(x => (startRow + x / 3) * 9 + (startCol + x % 3)).ToArray();
+            }
 
-                // Passer sur toutes les cases de la grille
-                for (int row = 0; row < 9; row++)
+            // Initialisation des pairs pour chaque case
+            for (int i = 0; i < 81; i++)
+            {
+                var peers = new HashSet<int>();
+                foreach (var unit in _units)
                 {
-                    for (int col = 0; col < 9; col++)
+                    if (unit.Contains(i))
                     {
-                        if (grid.Cells[row, col] == 0) // Si la case est vide
+                        foreach (var cell in unit)
                         {
-                            List<int> possibleValues = GetPossibleValues(grid, row, col);
-
-                            if (possibleValues.Count == 1)
+                            if (cell != i)
                             {
-                                // Si une seule valeur est possible, la remplir
-                                grid.Cells[row, col] = possibleValues[0];
-                                solved = false; // Une valeur a été remplie, continuer la boucle
+                                peers.Add(cell);
                             }
                         }
                     }
                 }
+                _peers[i] = peers.ToArray();
+            }
+        }
 
-                // Vérifier les cases avec des candidats multiples et appliquer d'autres techniques si nécessaire
-                // Par exemple, rechercher des paires cachées ou des triplets cachés.
-                // Ce code peut être étendu en fonction des autres techniques humaines.
+        public SudokuGrid Solve(SudokuGrid grid)
+        {
+            // Convertir la grille en tableau 1D
+            _grid = grid.Cells.Cast<int>().ToArray();
+            _candidates = new List<int>[81];
+
+            // Initialiser les candidats pour chaque case
+            for (int i = 0; i < 81; i++)
+            {
+                if (_grid[i] == 0)
+                {
+                    _candidates[i] = GetPossibleValues(i);
+                }
+                else
+                {
+                    _candidates[i] = new List<int> { _grid[i] };
+                }
+            }
+
+            // Appliquer les techniques humaines jusqu'à ce que la grille soit résolue ou bloquée
+            bool progress;
+            do
+            {
+                progress = false;
+                progress |= ApplyNakedSingles();
+                progress |= ApplyHiddenSingles();
+                progress |= ApplyNakedPairs();
+                progress |= ApplyPointingPairs();
+            } while (progress);
+
+            // Convertir la grille résolue en SudokuGrid
+            for (int i = 0; i < 81; i++)
+            {
+                grid.Cells[i / 9, i % 9] = _grid[i];
             }
 
             return grid;
         }
 
-        /// <summary>
-        /// Retourne les valeurs possibles pour une cellule donnée en fonction des contraintes de la ligne, colonne et sous-grille.
-        /// </summary>
-        /// <param name="grid">La grille Sudoku.</param>
-        /// <param name="row">L'indice de la ligne.</param>
-        /// <param name="col">L'indice de la colonne.</param>
-        /// <returns>Une liste des valeurs possibles pour cette cellule.</returns>
-        private List<int> GetPossibleValues(SudokuGrid grid, int row, int col)
+        private bool ApplyNakedSingles()
         {
-            HashSet<int> usedValues = new HashSet<int>();
-
-            // Ajouter les valeurs utilisées dans la ligne
-            for (int c = 0; c < 9; c++)
+            bool progress = false;
+            for (int i = 0; i < 81; i++)
             {
-                if (grid.Cells[row, c] != 0)
+                if (_grid[i] == 0 && _candidates[i].Count == 1)
                 {
-                    usedValues.Add(grid.Cells[row, c]);
+                    AssignValue(i, _candidates[i][0]);
+                    progress = true;
                 }
             }
+            return progress;
+        }
 
-            // Ajouter les valeurs utilisées dans la colonne
-            for (int r = 0; r < 9; r++)
+        private bool ApplyHiddenSingles()
+        {
+            bool progress = false;
+            for (int i = 0; i < 81; i++)
             {
-                if (grid.Cells[r, col] != 0)
+                if (_grid[i] == 0)
                 {
-                    usedValues.Add(grid.Cells[r, col]);
-                }
-            }
-
-            // Ajouter les valeurs utilisées dans la sous-grille 3x3
-            int startRow = (row / 3) * 3;
-            int startCol = (col / 3) * 3;
-
-            for (int r = startRow; r < startRow + 3; r++)
-            {
-                for (int c = startCol; c < startCol + 3; c++)
-                {
-                    if (grid.Cells[r, c] != 0)
+                    foreach (var value in _candidates[i])
                     {
-                        usedValues.Add(grid.Cells[r, c]);
+                        if (IsHiddenSingle(i, value))
+                        {
+                            AssignValue(i, value);
+                            progress = true;
+                            break;
+                        }
                     }
                 }
             }
+            return progress;
+        }
 
-            // Les valeurs possibles sont celles qui ne sont pas déjà utilisées dans la ligne, la colonne et la sous-grille
-            List<int> possibleValues = new List<int>();
-            for (int i = 1; i <= 9; i++)
+        private bool IsHiddenSingle(int cell, int value)
+        {
+            foreach (var peer in _peers[cell])
             {
-                if (!usedValues.Contains(i))
+                if (_grid[peer] == 0 && _candidates[peer].Contains(value))
                 {
-                    possibleValues.Add(i);
+                    return false;
                 }
             }
+            return true;
+        }
 
-            return possibleValues;
+        private bool ApplyNakedPairs()
+        {
+            bool progress = false;
+            foreach (var unit in _units)
+            {
+                var candidatesCount = unit.Select(c => _grid[c] == 0 ? _candidates[c].Count : 0).ToArray();
+                for (int i = 0; i < unit.Length; i++)
+                {
+                    if (candidatesCount[i] == 2)
+                    {
+                        for (int j = i + 1; j < unit.Length; j++)
+                        {
+                            if (candidatesCount[j] == 2 && _candidates[unit[i]].SequenceEqual(_candidates[unit[j]]))
+                            {
+                                // Éliminer ces candidats des autres cases de l'unité
+                                foreach (var cell in unit)
+                                {
+                                    if (_grid[cell] == 0 && cell != unit[i] && cell != unit[j])
+                                    {
+                                        foreach (var value in _candidates[unit[i]])
+                                        {
+                                            if (_candidates[cell].Remove(value))
+                                            {
+                                                progress = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return progress;
+        }
+
+        private bool ApplyPointingPairs()
+        {
+            bool progress = false;
+            foreach (var unit in _units)
+            {
+                for (int value = 1; value <= 9; value++)
+                {
+                    var cellsWithValue = unit.Where(c => _grid[c] == 0 && _candidates[c].Contains(value)).ToList();
+                    if (cellsWithValue.Count == 2 || cellsWithValue.Count == 3)
+                    {
+                        // Vérifier si toutes les cases sont dans le même bloc
+                        var block = cellsWithValue.Select(c => c / 27 * 3 + (c % 9) / 3).Distinct().ToList();
+                        if (block.Count == 1)
+                        {
+                            // Éliminer la valeur des autres cases du bloc
+                            var blockStart = (block[0] / 3) * 27 + (block[0] % 3) * 3;
+                            for (int i = 0; i < 3; i++)
+                            {
+                                for (int j = 0; j < 3; j++)
+                                {
+                                    var cell = blockStart + i * 9 + j;
+                                    if (_grid[cell] == 0 && !cellsWithValue.Contains(cell))
+                                    {
+                                        if (_candidates[cell].Remove(value))
+                                        {
+                                            progress = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return progress;
+        }
+
+        private void AssignValue(int cell, int value)
+        {
+            _grid[cell] = value;
+            _candidates[cell] = new List<int> { value };
+
+            // Éliminer la valeur des pairs
+            foreach (var peer in _peers[cell])
+            {
+                if (_grid[peer] == 0)
+                {
+                    _candidates[peer].Remove(value);
+                }
+            }
+        }
+
+        private List<int> GetPossibleValues(int cell)
+        {
+            var usedValues = new HashSet<int>();
+            foreach (var peer in _peers[cell])
+            {
+                if (_grid[peer] != 0)
+                {
+                    usedValues.Add(_grid[peer]);
+                }
+            }
+            return Enumerable.Range(1, 9).Except(usedValues).ToList();
         }
     }
 }
