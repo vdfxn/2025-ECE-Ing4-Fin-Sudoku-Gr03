@@ -394,10 +394,6 @@ namespace Sudoku.Shared
         }
 
         public int NbEmptyCells() => Cells.Cast<int>().Count(c => c == 0);
-
-        public void CopyFrom(SudokuGrid s)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
